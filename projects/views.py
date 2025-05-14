@@ -17,6 +17,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
     - POST /api/projects/: Create a project (admin only).
     - PUT/PATCH /api/projects/<id>/: Update a project (admin only).
     - DELETE /api/projects/<id>/: Delete a project (admin only).
+    Authentication: The API uses JSON Web Tokens (JWT) for authentication.
+      You need an access token to access protected endpoints (e.g., creating or updating projects).
+      Tokens are obtained via the /api/token/ endpoint and refreshed via /api/token/refresh/.
     """
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
@@ -26,3 +29,4 @@ class ProjectViewSet(viewsets.ModelViewSet):
         if self.action in ['list', 'retrieve']:
             return [AllowAny()]
         return [IsAdminUser()]
+    

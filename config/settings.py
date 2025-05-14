@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'blog',
 
     'rest_framework',
+    'rest_framework_simplejwt',
     'drf_spectacular',
 
 ]
@@ -136,7 +138,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -147,10 +150,36 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Developer Portfolio API',
-    'DESCRIPTION': 'API for managing portfolio projects, including CRUD operations and file uploads.',
+    'DESCRIPTION': ('API for managing portfolio projects, including CRUD operations and file uploads.'
+    'Authentication is done using JWT'
+    
+    'Use email as the unique identifier for authentication.'),
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': True,
     'SWAGGER_UI_SETTINGS': {
         'deepLinking': True,
+        'persistAuthorization': True,
     },
+    'SECURITY': [
+        {
+            'BearerAuth': {
+                'type': 'http',
+                'scheme': 'bearer',
+                'bearerFormat': 'JWT',
+            }
+        }
+    ],
 }
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+AUTHENTICATION_BACKENDS = [
+    'users.auth_backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
