@@ -35,7 +35,9 @@ urlpatterns = [
     path('api/', include('projects.urls')),
     path('api/users/', include('users.urls')),
     path('api/blog/', include('blog.urls')),
+    path('api/testimonials/', include('testimonials.urls')),
 
+    path('api-auth/', include('rest_framework.urls')), 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

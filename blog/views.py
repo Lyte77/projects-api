@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from rest_framework.permissions import IsAdminUser, AllowAny,IsAuthenticated
+from rest_framework.permissions import IsAdminUser, AllowAny,IsAuthenticated,IsAuthenticatedOrReadOnly
 from .serializers import BlogSerializer
+from .permissions import IsStaffOrAuthorOrReadOnly
 from drf_spectacular.utils import extend_schema
 from .models import Post
 
@@ -18,7 +19,7 @@ class BlogViewSet(viewsets.ModelViewSet):
 
       queryset = Post.objects.all()
       serializer_class = BlogSerializer
-      permission_classes = [IsAdminUser]
+      permission_classes = [IsStaffOrAuthorOrReadOnly]
       lookup_field = 'slug'
 
       @extend_schema(
